@@ -56,9 +56,10 @@ fn active() -> HashMap::<String, String> {
 
 fn show_entries(entries: &HashMap<String, String>) -> String {
     let active_entries = active();
-    let mut entries_values = active_entries.keys().chain(entries.keys());
+    let normal_entries_keys = entries.keys().filter(|&x| !active_entries.contains_key(x));
+    let mut entries_keys = active_entries.keys().chain(normal_entries_keys);
     let mut for_select = "".to_owned();
-    while let Some(entry) = entries_values.next() {
+    while let Some(entry) = entries_keys.next() {
         for_select.push_str(entry);
         for_select.push_str("\n");
     }
