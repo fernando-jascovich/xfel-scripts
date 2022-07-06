@@ -2,6 +2,7 @@ use clap::Parser;
 
 mod menu;
 mod pass;
+mod task;
 
 #[derive(Parser, Debug)]
 struct Cli {
@@ -18,6 +19,7 @@ fn main() {
     match args.action.as_str() {
         "menu" => menu::run(),
         "pass" => pass::run(),
+        "task" => task::run(),
         _ => unrecognized(args.action)
     }
 }

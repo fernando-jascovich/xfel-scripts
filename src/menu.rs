@@ -5,14 +5,18 @@ use std::process::Command;
 
 fn bemenu_args<'a>(cmd: &'a mut Command) -> &'a mut Command {
     cmd
+        .arg("-l").arg("5")
+        .arg("-p").arg("->")
+        .arg("-i")
+        .arg("-w")
         .arg("-m").arg("1")
-        .arg("--fn").arg("Iosevka 25")
+        .arg("--fn").arg("Iosevka 31")
 }
 
-
-pub fn select(input_data: &str) -> String {
+pub fn select(input_data: &str, prompt: Option<&str>) -> String {
     let mut cmd = Command::new("bemenu");
     let mut proc = bemenu_args(&mut cmd)
+        .arg("-p").arg(prompt.unwrap_or("->"))
         .stdin(Stdio::piped())
         .stdout(Stdio::piped())
         .spawn()

@@ -24,7 +24,7 @@ fn pass_entries() -> Vec<String> {
 
 pub fn run() {
     let entries = pass_entries();
-    let selected = select(&entries.join("\n"));
+    let selected = select(&entries.join("\n"), None);
     if selected.is_empty() {
         println!("No entry selected");
         std::process::exit(1);
