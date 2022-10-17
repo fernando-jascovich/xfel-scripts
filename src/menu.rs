@@ -10,7 +10,7 @@ fn bemenu_args<'a>(cmd: &'a mut Command) -> &'a mut Command {
         .arg("-i")
         .arg("-w")
         .arg("-m").arg("1")
-        .arg("--fn").arg("Iosevka 31")
+        .arg("--fn").arg("Iosevka 33")
 }
 
 pub fn select(input_data: &str, prompt: Option<&str>) -> String {
