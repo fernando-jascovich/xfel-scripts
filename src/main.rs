@@ -3,6 +3,7 @@ use clap::Parser;
 mod menu;
 mod pass;
 mod task;
+mod diary;
 
 #[derive(Parser, Debug)]
 struct Cli {
@@ -20,6 +21,7 @@ fn main() {
         "menu" => menu::run(),
         "pass" => pass::run(),
         "task" => task::run(),
+        "diary" => diary::run(),
         _ => unrecognized(args.action)
     }
 }
