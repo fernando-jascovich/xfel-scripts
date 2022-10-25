@@ -31,7 +31,19 @@ fn entries() -> HashMap<String, String> {
 }
 
 fn active() -> HashMap::<String, String> {
-    HashMap::new()
+    let active = map_for_cmd(
+        Command::new("xfel-worklog")
+            .arg("browse")
+            .arg("-a")
+            .output()
+            .expect("Failed to execute xfel-worklog")
+            .stdout
+    );
+    let mut out = HashMap::new();
+    for (key, value) in active {
+        out.insert(format!("*{}", key), String::from(value));
+    }
+    out
 }
 
 fn show_entries(entries: &HashMap<String, String>) -> String {
@@ -78,7 +90,8 @@ pub fn run () {
     if selected.is_empty() {
         std::process::exit(1);
     }
-    let entry = entries.get_key_value(&selected).unwrap();
+    let key = selected.replace("*", "");
+    let entry = entries.get_key_value(&key).unwrap();
     let action = prompt_for_action(entry);
     if action.is_empty() {
         std::process::exit(1);
