@@ -37,9 +37,11 @@ pub fn select(input_data: &str, prompt: Option<&str>) -> String {
 }
 
 fn desktop_entries() -> Vec<String> {
+    let home = std::env::var("HOME").unwrap();
     let files = String::from_utf8(
         Command::new("ls")
             .arg("/usr/share/applications")
+            .arg(format!("{}/.local/share/applications", home))
             .output()
             .expect("Failed to execute ls command")
             .stdout,
@@ -47,6 +49,7 @@ fn desktop_entries() -> Vec<String> {
     files
         .split("\n")
         .filter(|x| x.len() > 0)
+        .filter(|x| !x.ends_with(":"))
         .map(|x| {
             let parts: Vec<&str> = x.split(".").collect();
             parts.first().unwrap().to_string()
