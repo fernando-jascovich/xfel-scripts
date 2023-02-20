@@ -36,22 +36,41 @@ pub fn select(input_data: &str, prompt: Option<&str>) -> String {
         .replace("\n", "")
 }
 
-pub fn run() {
-    let desktop_files = String::from_utf8(
+fn desktop_entries() -> Vec<String> {
+    let files = String::from_utf8(
         Command::new("ls")
             .arg("/usr/share/applications")
             .output()
             .expect("Failed to execute ls command")
             .stdout,
     ).unwrap();
-    let arr: Vec<String> = desktop_files
+    files
         .split("\n")
         .filter(|x| x.len() > 0)
         .map(|x| {
             let parts: Vec<&str> = x.split(".").collect();
             parts.first().unwrap().to_string()
         })
-        .collect();
+        .collect()
+}
+
+fn flatpak_entries() -> Vec<String> {
+    let files = String::from_utf8(
+        Command::new("ls")
+            .arg("/var/lib/flatpak/exports/bin")
+            .output()
+            .expect("Failed to ls in flatpak directory")
+            .stdout
+    ).unwrap();
+    files
+        .split("\n")
+        .filter(|x| x.len() > 0)
+        .map(|x| String::from(x))
+        .collect()
+}
+
+pub fn run() {
+    let arr = [flatpak_entries(), desktop_entries()].concat();
     let selected = select(&arr.join("\n"), None);
     Command::new("gtk-launch")
         .arg(selected)
