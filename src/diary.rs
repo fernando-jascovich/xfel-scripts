@@ -1,7 +1,7 @@
 use crate::menu::select;
 use std::{collections::HashMap, process::Command};
 
-const ACTIONS: [&str; 2] = ["START", "STOP"];
+const ACTIONS: [&str; 3] = ["START", "STOP", "ARCHIVE"];
 
 fn add_task_entry(input: &&str, map: &mut HashMap<String, String>) {
     let key = input.trim().rsplit_once("/").unwrap().1;
@@ -68,6 +68,7 @@ fn do_action(action: &str, entry: (&String, &String)) {
     let cmd = match action {
         "START" => "start",
         "STOP" => "stop",
+        "ARCHIVE" => "archive",
         _ => std::process::exit(1)
     };
     let task_out = Command::new("xfel-worklog")
