@@ -4,6 +4,7 @@ mod menu;
 mod pass;
 mod task;
 mod diary;
+mod music;
 
 #[derive(Parser, Debug)]
 struct Cli {
@@ -22,6 +23,7 @@ fn main() {
         "pass" => pass::run(),
         "task" => task::run(),
         "diary" => diary::run(),
+        "music" => music::run(),
         _ => unrecognized(args.action)
     }
 }
