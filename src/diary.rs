@@ -4,8 +4,10 @@ use std::{collections::HashMap, process::Command};
 const ACTIONS: [&str; 3] = ["START", "STOP", "ARCHIVE"];
 
 fn add_task_entry(input: &&str, map: &mut HashMap<String, String>) {
-    let key = input.trim().rsplit_once("/").unwrap().1;
-    map.insert(key.to_string(), input.to_string());
+    println!("{}", input);
+    if let Some(k) = input.trim().rsplit_once("/") {
+        map.insert(k.1.to_string(), input.to_string());
+    }
 }
 
 fn map_for_cmd(stdout: Vec<u8>) -> HashMap::<String, String> {
