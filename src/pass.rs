@@ -30,13 +30,24 @@ pub fn run() {
         std::process::exit(1);
     }
     let pass = Command::new("pass")
-        .arg("-c")
         .arg(selected)
-        .spawn()
+        .output()
         .unwrap();
-    let out = pass.wait_with_output().unwrap();
-    if !out.stderr.is_empty() {
-        println!("{}", String::from_utf8(out.stderr).unwrap());
+    if !pass.stderr.is_empty() {
+        println!("{}", String::from_utf8(pass.stderr).unwrap());
+        std::process::exit(1);
+    }
+
+    let out_str = String::from_utf8(pass.stdout).unwrap();
+    let first_line = out_str.lines().next().unwrap();
+    let wl_copy = Command::new("wl-copy")
+        .arg(first_line)
+        .spawn()
+        .unwrap()
+        .wait_with_output()
+        .unwrap();
+    if !wl_copy.stderr.is_empty() {
+        println!("{}", String::from_utf8(wl_copy.stderr).unwrap());
         std::process::exit(1);
     }
 }
