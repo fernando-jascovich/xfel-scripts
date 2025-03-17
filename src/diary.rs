@@ -1,8 +1,40 @@
+use std::str::FromStr;
 use crate::menu::select;
 use std::{collections::HashMap, process::Command};
 
-const ACTIONS: [&str; 3] = ["START", "STOP", "ARCHIVE"];
+enum ACTIONS {
+    START,
+    STOP,
+    ARCHIVE,
+    OPEN,
+    UNKNOWN
+}
 
+impl FromStr for ACTIONS {
+    type Err = ();
+
+    fn from_str(input: &str) -> Result<ACTIONS, ()> {
+        match input {
+            "START" => Ok(ACTIONS::START),
+            "STOP" => Ok(ACTIONS::STOP),
+            "ARCHIVE" => Ok(ACTIONS::ARCHIVE),
+            "OPEN" => Ok(ACTIONS::OPEN),
+            _ => Err(())
+        }
+    }
+}
+
+impl ACTIONS {
+    fn to_string(&self) -> String {
+        match &self {
+            ACTIONS::START => "START".to_string(),
+            ACTIONS::STOP => "STOP".to_string(),
+            ACTIONS::ARCHIVE => "ARCHIVE".to_string(),
+            ACTIONS::OPEN => "OPEN".to_string(),
+            ACTIONS::UNKNOWN => "UNKNOWN".to_string()
+        }
+    }
+}
 fn add_task_entry(input: &&str, map: &mut HashMap<String, String>) {
     println!("{}", input);
     if let Some(k) = input.trim().rsplit_once("/") {
@@ -62,15 +94,29 @@ fn show_entries(entries: &HashMap<String, String>) -> String {
 
 fn prompt_for_action(entry: (&String, &String)) -> String {
     let prompt = format!("{} ->", entry.0);
-    select(&ACTIONS.join("\n"), Some(&prompt))
+    let actions: [&str; 4] = [
+        &ACTIONS::START.to_string(), 
+        &ACTIONS::STOP.to_string(), 
+        &ACTIONS::ARCHIVE.to_string(),
+        &ACTIONS::OPEN.to_string()
+    ];
+    select(&actions.join("\n"), Some(&prompt))
 }
 
 
 fn do_action(action: &str, entry: (&String, &String)) {
-    let cmd = match action {
-        "START" => "start",
-        "STOP" => "stop",
-        "ARCHIVE" => "archive",
+    let cmd = match ACTIONS::from_str(action).unwrap_or(ACTIONS::UNKNOWN) {
+        ACTIONS::START => "start",
+        ACTIONS::STOP => "stop",
+        ACTIONS::ARCHIVE => "archive",
+        ACTIONS::OPEN => {
+           Command::new("foot")
+                .arg("nvim")
+                .arg(entry.1)
+                .output()
+                .expect("Cannot open terminal");
+            std::process::exit(0)
+        }
         _ => std::process::exit(1)
     };
     let task_out = Command::new("xfel-worklog")
