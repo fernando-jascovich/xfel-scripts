@@ -75,7 +75,9 @@ fn active() -> HashMap::<String, String> {
     );
     let mut out = HashMap::new();
     for (key, value) in active {
-        out.insert(format!("*{}", key), String::from(value));
+        if value.starts_with("/") { 
+            out.insert(format!("*{}", key), String::from(value));
+        }
     }
     out
 }
