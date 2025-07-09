@@ -9,7 +9,6 @@ fn bemenu_args() -> Vec<&'static str> {
         "-p",
         "->",
         "-i",
-        "-b",
         "-w",
         "--single-instance",
         "-m",
