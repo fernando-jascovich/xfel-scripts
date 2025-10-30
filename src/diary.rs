@@ -1,3 +1,4 @@
+use std::env;
 use std::str::FromStr;
 use crate::menu::select;
 use std::{collections::HashMap, process::Command};
@@ -112,7 +113,8 @@ fn do_action(action: &str, entry: (&String, &String)) {
         ACTIONS::STOP => "stop",
         ACTIONS::ARCHIVE => "archive",
         ACTIONS::OPEN => {
-           Command::new("foot")
+            let term = env::var("TERMINAL").unwrap_or("foot".to_string());
+            Command::new(term)
                 .arg("nvim")
                 .arg(entry.1)
                 .output()
